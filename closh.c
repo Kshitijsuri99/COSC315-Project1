@@ -1,5 +1,8 @@
 // closh.c - COSC 315, Winter 2020
-// YOUR NAME HERE
+
+// Florencia Chomski
+// Ahmad Raza Jamal
+// Kshtij Suri
 
 #include <stdio.h>
 #include <unistd.h>
