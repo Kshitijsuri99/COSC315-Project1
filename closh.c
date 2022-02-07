@@ -59,8 +59,26 @@ int main() {
         // end parsing code
 
         if(parallel == TRUE){
-
+            for( int i = 0; i < count; ++i ) {
+                pid_t pid;
+                pid = fork ();
+                switch(pid) { 
+                    case 0: /* child */
+                        sleep(timeout); //process will end and exit in the given timeout seconds if it is taking too long
+                        execvp(cmdTokens[0], cmdTokens); // loading the program
+                        printf("Didn't find program %s\n", cmd);// This line of code only runs when the command cannot be found
+                        exit(0);// Temination of code
+                    case -1:
+                        perror( "fork" );
+                        exit( 1 );
+                    default:  /* parent */
+                        // waitpid(pid, 0, 0);
+                        exit(1);
+                        /* do stuff, but don't wait() or terminate */
+                } 
+            }
         }
+
         else if(parallel == FALSE){
             int cid;
             for(int i=1; i<count; i++){
