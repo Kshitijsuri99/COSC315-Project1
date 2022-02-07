@@ -57,6 +57,25 @@ int main() {
             timeout = readChar() - '0';
         } while (timeout < 0 || timeout > 9);
         // end parsing code
+
+        if(parallel == TRUE){
+
+        }
+        else if(parallel == FALSE){
+            int cid;
+            for(int i=1; i<count; i++){
+                cid = fork();
+                if(cid == 0){
+                    sleep(timeout); //process will end and exit in the given timeout seconds if it is taking too long
+                    execvp(cmdTokens[0], cmdTokens); // loading the program
+                    printf("Didn't find program %s\n", cmd);// This line of code only runs when the command cannot be found
+                    exit(1);// Temination of code
+                }
+                else{
+                    waitpid(cid, 0, 0);
+                }
+            }
+        }
         
         
         ////////////////////////////////////////////////////////
@@ -65,6 +84,8 @@ int main() {
         // to implement the rest of closh                     //
         //                                                    //
         // /////////////////////////////////////////////////////
+
+
         
         // just executes the given command once - REPLACE THIS CODE WITH YOUR OWN
         execvp(cmdTokens[0], cmdTokens); // replaces the current process with the given program
