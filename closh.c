@@ -72,7 +72,6 @@ int main() {
                         perror( "fork" );
                         exit( 1 );
                     default:  /* parent */
-                        // waitpid(pid, 0, 0);
                         exit(1);
                         /* do stuff, but don't wait() or terminate */
                 } 
@@ -94,17 +93,7 @@ int main() {
                 }
             }
         }
-        
-        
-        ////////////////////////////////////////////////////////
-        //                                                    //
-        // TODO: use cmdTokens, count, parallel, and timeout  //
-        // to implement the rest of closh                     //
-        //                                                    //
-        // /////////////////////////////////////////////////////
 
-
-        
         // just executes the given command once - REPLACE THIS CODE WITH YOUR OWN
         execvp(cmdTokens[0], cmdTokens); // replaces the current process with the given program
         // doesn't return unless the calling failed
