@@ -102,7 +102,9 @@ int main() {
                     sleep(timeout); //process will end and exit in the given timeout seconds if it is taking too long
                     execvp(cmdTokens[0], cmdTokens); // loading the program
                     printf("Didn't find program %s\n", cmd);// This line of code only runs when the command cannot be found
-                    exit(1);// Temination of code
+                    if(!kill (cid, SIGKILL)) {
+                        printf("Killed the child process");
+                    }
                 }
                 else{
                     waitpid(cid, 0, 0);
