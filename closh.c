@@ -92,6 +92,8 @@ int main() {
 		        pthread_create(&threads[i], NULL, &parallelThreadsFn, &thread_data); //	Create a thread process 
 		        pthread_join(threads[i], NULL);	// Make parent thread wait for children to finish first
 	        }
+
+            exit(1); 
         }
 
         else if(parallel == FALSE){
@@ -110,8 +112,9 @@ int main() {
                     waitpid(cid, 0, 0);
                 }
             }
-        }  
-        exit(1);    
+            
+            exit(1); 
+        }     
     }    
 }
 
