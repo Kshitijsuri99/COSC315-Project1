@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <signal.h>
+#include <pthread.h>
 
 #define TRUE 1
 #define FALSE 0
@@ -28,6 +29,27 @@ char readChar() {
     char c = getchar();
     while (getchar() != '\n');
     return c;
+}
+
+struct ThreadData { //
+    char** cmdTokens; // array of strings
+    char* cmd; // the cmd token
+};
+
+// A fn that takes the thread data (e.g. cmdTokens and cmd) and executes a process
+void * parallelThreadsFn (struct ThreadData * thread_data) {	
+    int cid;
+    cid = fork();
+    if(cid == 0){
+        execvp(thread_data -> cmdTokens[0], thread_data -> cmdTokens); // loading the program
+        printf("Didn't find program %s\n", thread_data -> cmd);// This line of code only runs when the command cannot be found
+        exit(1);// Temination of code
+    }
+    else{
+        waitpid(cid, 0, 0);
+    }
+	
+	pthread_exit(NULL); // Once thread is done, exit
 }
 
 // main method - program entry point
@@ -59,29 +81,22 @@ int main() {
         // end parsing code
 
         if(parallel == TRUE){
-            for( int i = 0; i < count; ++i ) {
-                pid_t pid;
-                pid = fork ();
-                switch(pid) { 
-                    case 0: /* child */
-                        sleep(timeout); //process will end and exit in the given timeout seconds if it is taking too long
-                        execvp(cmdTokens[0], cmdTokens); // loading the program
-                        printf("Didn't find program %s\n", cmd);// This line of code only runs when the command cannot be found
-                        exit(0);// Temination of code
-                    case -1:
-                        perror( "fork" );
-                        exit( 1 );
-                    default:  /* parent */
-                        // waitpid(pid, 0, 0);
-                        exit(1);
-                        /* do stuff, but don't wait() or terminate */
-                } 
-            }
+            pthread_t threads[count]; // Array of threads
+            struct ThreadData thread_data; // A struct to store the data to be passed into the threadFn
+
+            // Assigning data to the struct objects 
+            thread_data.cmd = cmd;
+            thread_data.cmdTokens = cmdTokens;
+
+	        for(int i = 0; i < count; i++) {		
+		        pthread_create(&threads[i], NULL, &parallelThreadsFn, &thread_data); //	Create a thread process 
+		        pthread_join(threads[i], NULL);	// Make parent thread wait for children to finish first
+	        }
         }
 
         else if(parallel == FALSE){
             int cid;
-            for(int i=1; i<count; i++){
+            for(int i=0; i<count; i++){
                 cid = fork();
                 if(cid == 0){
                     sleep(timeout); //process will end and exit in the given timeout seconds if it is taking too long
@@ -93,23 +108,8 @@ int main() {
                     waitpid(cid, 0, 0);
                 }
             }
-        }
-        
-        
-        ////////////////////////////////////////////////////////
-        //                                                    //
-        // TODO: use cmdTokens, count, parallel, and timeout  //
-        // to implement the rest of closh                     //
-        //                                                    //
-        // /////////////////////////////////////////////////////
-
-
-        
-        // just executes the given command once - REPLACE THIS CODE WITH YOUR OWN
-        execvp(cmdTokens[0], cmdTokens); // replaces the current process with the given program
-        // doesn't return unless the calling failed
-        printf("Can't execute %s\n", cmdTokens[0]); // only reached if running the program failed
-        exit(1);        
-    }
+        }  
+        exit(1);    
+    }    
 }
 
