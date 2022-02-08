@@ -32,6 +32,8 @@ For the sequential implementation, a child process is created “count” times 
 
 For parallel, the pthread() function is used to create individual threads for the children system calls. This will create the number of threads as specified by the count. Each thread will have a unique id which makes each child identifiable. The threads are run for all the children and once they are all done running, the parent process is run using pthread_join() fn. The thread needs to be passed a struct, as data to the function parameter, which will provide the function parallelThreadsFn() all the necessary data it needs to execute the children. 
 
+Sources: https://www.educative.io/edpresso/how-to-create-a-simple-thread-in-ca
+
 **Sample Output**
 
 ![parallel and sequential outputs](https://user-images.githubusercontent.com/33037741/152927177-dc2a88e1-82dd-4652-9108-e6f301e6934d.png)
